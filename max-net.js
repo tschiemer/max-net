@@ -123,7 +123,7 @@ Max.addHandler("udp-recv", (cmd, port, address) => {
 
 function startTcpServer(port,host)
 {
-	server = new net.Server();
+	server = net.createServer();
 	
 	server.on('error', (err) => {
   		Max.outlet(`tcp-listen error ${err.message}`);
@@ -145,12 +145,18 @@ function startTcpServer(port,host)
 	});
 
 	server.on('connection', (socket) => {
-  		const serverAddress = server.address();
-		const clientAddress = socket.address();
+  		//const serverAddress = server.address();
+		const remoteAddr = {
+			address: socket.remoteAddress,
+			port: socket.remotePort,
+			family: socket.remoteFamily
+		};
+		
+		console.log(remoteAddr);
 
-		connectedClients[clientAddress.address] = socket;
+		connectedClients[`${remoteAddr.address}:${remoteAddr.port}`] = socket;
 
-		Max.outlet(`tcp-listen connect ${clientAddress.address} ${clientAddress.port}`);
+		Max.outlet(`tcp-listen connect ${remoteAddr.address} ${remoteAddr.port}`);
 		
 		socket.on('error', (err) => {
 			console.error(err);
@@ -159,16 +165,16 @@ function startTcpServer(port,host)
 		});
 		
 		socket.on('end', () => {
-			delete connectedClients[clientAddress.address];
-			Max.outlet(`tcp-listen disconnect ${clientAddress.address} ${clientAddress.port}`);
+			delete connectedClients[`${remoteAddr.address}:${remoteAddr.port}`];
+			Max.outlet(`tcp-listen disconnect ${remoteAddr.address} ${remoteAddr.port}`);
 		});
 				
 		socket.on('data', (data) => {
-			Max.outlet(`tcp-listen data ${clientAddress.address} ${clientAddress.port} ${data}`);
+			Max.outlet(`tcp-listen data ${remoteAddr.address} ${remoteAddr.port} ${data}`);
 		});
 		
 		socket.on('drain', () => {
-			Max.outlet(`tcp-listen sent ${clientAddress.address} ${clientAddress.port}`);
+			Max.outlet(`tcp-listen sent ${remoteAddr.address} ${remoteAddr.port}`);
 		});
 		
 	});

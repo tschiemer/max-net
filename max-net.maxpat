@@ -40,6 +40,18 @@
 		"showontab" : 1,
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-5",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 651.0, 576.0, 81.0, 22.0 ],
+					"text" : "sprintf %s:%s"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-28",
 					"maxclass" : "comment",
 					"numinlets" : 1,
@@ -57,8 +69,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 551.0, 461.0, 190.5, 22.0 ],
-					"presentation_linecount" : 6,
-					"text" : "::ffff:127.0.0.1 1001"
+					"text" : "::ffff:127.0.0.1:59356"
 				}
 
 			}
@@ -92,7 +103,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 551.0, 317.0, 190.5, 22.0 ],
-					"text" : "::ffff:127.0.0.1 1001"
+					"text" : "::ffff:127.0.0.1:59356"
 				}
 
 			}
@@ -624,16 +635,14 @@
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 59.25, 425.0, 99.0, 22.0 ],
+									"patching_rect" : [ 59.25, 425.0, 126.0, 22.0 ],
 									"saved_object_attributes" : 									{
 										"autostart" : 0,
 										"defer" : 0,
-										"node_bin_path" : "",
-										"npm_bin_path" : "",
 										"watch" : 0
 									}
 ,
-									"text" : "node.script net.js"
+									"text" : "node.script max-net.js"
 								}
 
 							}
@@ -1017,7 +1026,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 465.5, 346.5, 77.0, 22.0 ],
+					"patching_rect" : [ 465.5, 386.5, 77.0, 22.0 ],
 					"text" : "my message"
 				}
 
@@ -1029,7 +1038,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 551.0, 387.5, 82.0, 22.0 ],
+					"patching_rect" : [ 551.0, 278.5, 82.0, 22.0 ],
 					"text" : "destination all"
 				}
 
@@ -1147,17 +1156,6 @@
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 558.75, 187.0, 134.0, 22.0 ],
 									"text" : "tcp-listen disconnect $1"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-29",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 0,
-									"patching_rect" : [ 119.0, 351.0, 32.0, 22.0 ],
-									"text" : "print"
 								}
 
 							}
@@ -1596,14 +1594,14 @@
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 59.25, 425.0, 99.0, 22.0 ],
+									"patching_rect" : [ 59.25, 425.0, 126.0, 22.0 ],
 									"saved_object_attributes" : 									{
 										"autostart" : 0,
 										"defer" : 0,
 										"watch" : 0
 									}
 ,
-									"text" : "node.script net.js"
+									"text" : "node.script max-net.js"
 								}
 
 							}
@@ -1766,16 +1764,7 @@
 							}
 , 							{
 								"patchline" : 								{
-									"destination" : [ "obj-29", 0 ],
-									"order" : 0,
-									"source" : [ "obj-34", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
 									"destination" : [ "obj-49", 0 ],
-									"order" : 1,
 									"source" : [ "obj-34", 0 ]
 								}
 
@@ -2105,6 +2094,18 @@
 						"visible" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
+									"id" : "obj-6",
+									"maxclass" : "newobj",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 733.0, 281.0, 81.0, 22.0 ],
+									"text" : "sprintf %s:%s"
+								}
+
+							}
+, 							{
+								"box" : 								{
 									"bgcolor" : [ 0.301961, 0.301961, 0.301961, 0.26 ],
 									"bgcolor2" : [ 0.2, 0.2, 0.2, 1.0 ],
 									"bgfillcolor_angle" : 270.0,
@@ -2132,30 +2133,8 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 832.5, 295.0, 96.5, 22.0 ],
-									"text" : "::ffff:127.0.0.1"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"bgcolor" : [ 0.301961, 0.301961, 0.301961, 0.26 ],
-									"bgcolor2" : [ 0.2, 0.2, 0.2, 1.0 ],
-									"bgfillcolor_angle" : 270.0,
-									"bgfillcolor_autogradient" : 0.0,
-									"bgfillcolor_color" : [ 0.2, 0.2, 0.2, 1.0 ],
-									"bgfillcolor_color1" : [ 0.301961, 0.301961, 0.301961, 0.26 ],
-									"bgfillcolor_color2" : [ 0.2, 0.2, 0.2, 1.0 ],
-									"bgfillcolor_proportion" : 0.5,
-									"bgfillcolor_type" : "gradient",
-									"gradient" : 1,
-									"id" : "obj-78",
-									"maxclass" : "message",
-									"numinlets" : 2,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 794.5, 216.0, 29.5, 22.0 ],
-									"text" : "$1"
+									"patching_rect" : [ 832.5, 295.0, 232.5, 22.0 ],
+									"text" : "::ffff:127.0.0.1:59339"
 								}
 
 							}
@@ -2177,7 +2156,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 832.5, 248.0, 311.0, 22.0 ],
-									"presentation_linecount" : 2,
 									"text" : "tcp-listen sendto $1 my message to this specific recipient"
 								}
 
@@ -2189,8 +2167,8 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 832.5, 216.0, 96.5, 22.0 ],
-									"text" : "::ffff:127.0.0.1"
+									"patching_rect" : [ 832.5, 216.0, 232.5, 22.0 ],
+									"text" : "::ffff:127.0.0.1:59339"
 								}
 
 							}
@@ -2344,7 +2322,7 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 1027.5, 831.5, 293.0, 20.0 ],
-									"text" : "listen EADDRINUSE :::1001"
+									"text" : "connect ECONNREFUSED 127.0.0.1:1001"
 								}
 
 							}
@@ -2368,7 +2346,7 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 1027.5, 763.5, 293.0, 20.0 ],
-									"text" : "my message to this specific recipient"
+									"text" : "a message to all"
 								}
 
 							}
@@ -2452,7 +2430,7 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 347.75, 438.5, 293.0, 20.0 ],
-									"text" : "tcp-listen disconnect ::ffff:127.0.0.1 1001"
+									"text" : "tcp-listen stop"
 								}
 
 							}
@@ -2532,11 +2510,12 @@
 								"box" : 								{
 									"bgcolor" : [ 1.0, 1.0, 1.0, 0.57 ],
 									"id" : "obj-49",
+									"linecount" : 2,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 610.5, 825.5, 293.0, 20.0 ],
-									"text" : "0 not connected , can not send"
+									"patching_rect" : [ 610.5, 825.5, 293.0, 33.0 ],
+									"text" : "::ffff:127.0.0.1:59339 not connected , can not disconnect"
 								}
 
 							}
@@ -2560,7 +2539,7 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 610.5, 757.5, 293.0, 20.0 ],
-									"text" : "::ffff:127.0.0.1 1001 my message"
+									"text" : "::ffff:127.0.0.1 59338 fff"
 								}
 
 							}
@@ -2584,7 +2563,7 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 610.5, 686.5, 293.0, 20.0 ],
-									"text" : "::ffff:127.0.0.1 1001"
+									"text" : "::ffff:127.0.0.1 59339"
 								}
 
 							}
@@ -2608,7 +2587,7 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 610.5, 611.5, 293.0, 20.0 ],
-									"text" : "::ffff:127.0.0.1 1001"
+									"text" : "::ffff:127.0.0.1 59339"
 								}
 
 							}
@@ -3011,14 +2990,14 @@
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 245.5, 373.0, 99.0, 22.0 ],
+									"patching_rect" : [ 245.5, 373.0, 126.0, 22.0 ],
 									"saved_object_attributes" : 									{
 										"autostart" : 0,
 										"defer" : 0,
 										"watch" : 0
 									}
 ,
-									"text" : "node.script net.js"
+									"text" : "node.script max-net.js"
 								}
 
 							}
@@ -3249,7 +3228,7 @@
 							}
 , 							{
 								"patchline" : 								{
-									"destination" : [ "obj-78", 0 ],
+									"destination" : [ "obj-6", 0 ],
 									"order" : 0,
 									"source" : [ "obj-29", 2 ]
 								}
@@ -3465,6 +3444,22 @@
 							}
 , 							{
 								"patchline" : 								{
+									"destination" : [ "obj-75", 1 ],
+									"order" : 1,
+									"source" : [ "obj-6", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-80", 1 ],
+									"order" : 0,
+									"source" : [ "obj-6", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
 									"destination" : [ "obj-61", 0 ],
 									"order" : 1,
 									"source" : [ "obj-65", 0 ]
@@ -3539,22 +3534,6 @@
 							}
 , 							{
 								"patchline" : 								{
-									"destination" : [ "obj-75", 1 ],
-									"order" : 1,
-									"source" : [ "obj-78", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-80", 1 ],
-									"order" : 0,
-									"source" : [ "obj-78", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
 									"destination" : [ "obj-16", 0 ],
 									"source" : [ "obj-79", 0 ]
 								}
@@ -3577,7 +3556,7 @@
  ]
 					}
 ,
-					"patching_rect" : [ 150.5, 127.5, 96.0, 22.0 ],
+					"patching_rect" : [ 110.5, 127.5, 96.0, 22.0 ],
 					"saved_object_attributes" : 					{
 						"description" : "",
 						"digest" : "",
@@ -3988,14 +3967,14 @@
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 59.25, 425.0, 99.0, 22.0 ],
+									"patching_rect" : [ 59.25, 425.0, 126.0, 22.0 ],
 									"saved_object_attributes" : 									{
 										"autostart" : 0,
 										"defer" : 0,
 										"watch" : 0
 									}
 ,
-									"text" : "node.script net.js"
+									"text" : "node.script max-net.js"
 								}
 
 							}
@@ -4535,14 +4514,14 @@
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 57.0, 523.0, 99.0, 22.0 ],
+									"patching_rect" : [ 57.0, 523.0, 126.0, 22.0 ],
 									"saved_object_attributes" : 									{
 										"autostart" : 0,
 										"defer" : 0,
 										"watch" : 0
 									}
 ,
-									"text" : "node.script net.js"
+									"text" : "node.script max-net.js"
 								}
 
 							}
@@ -5317,16 +5296,7 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-23", 1 ],
-					"order" : 1,
-					"source" : [ "obj-21", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-27", 1 ],
-					"order" : 0,
+					"destination" : [ "obj-5", 0 ],
 					"source" : [ "obj-21", 0 ]
 				}
 
@@ -5386,6 +5356,22 @@
 				"patchline" : 				{
 					"destination" : [ "obj-11", 0 ],
 					"source" : [ "obj-4", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-23", 1 ],
+					"order" : 1,
+					"source" : [ "obj-5", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-27", 1 ],
+					"order" : 0,
+					"source" : [ "obj-5", 0 ]
 				}
 
 			}
@@ -5528,8 +5514,8 @@
 			}
  ],
 		"dependency_cache" : [ 			{
-				"name" : "net.js",
-				"bootpath" : "~/Documents/Projects/Max/networking",
+				"name" : "max-net.js",
+				"bootpath" : "~/Documents/Projects/Max/max-net",
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
 				"implicit" : 1
