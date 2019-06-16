@@ -43,7 +43,7 @@ Max.addHandler('trim', (enabled) => {
 
 	if (typeof enabled !== 'undefined'){
 	
-		trim = 0 < parseInt(enabled);	
+		trimEnabled = 0 < parseInt(enabled);	
 	}
 			
 	Max.outlet('trim', trimEnabled ? 1 : 0);
