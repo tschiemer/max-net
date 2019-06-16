@@ -126,13 +126,16 @@ function startUdpServer(port,address) {
 	
 	server.on('message', (data, rinfo) => {
 		
-		data = data.toString(datamode);
+		var dlen = data.length;
+		
+		data = data.toString(dataMode);
 		
 		if (dataMode == 'utf8' && trimEnabled){
 			data = data.trim();
+			dlen = data.length;
 		}
 		
-		Max.outlet('udp-recv', 'data', rinfo.address, rinfo.port, data.length, data);
+		Max.outlet('udp-recv', 'data', rinfo.address, rinfo.port, dlen, data);
 	});
 		
 	server.bind(port,address);
@@ -210,10 +213,11 @@ function startTcpServer(port,host)
 			
 			var dlen = data.length;
 			
-			data = data.toString(datamode);
+			data = data.toString(dataMode);
 		
 			if (dataMode == 'utf8' && trimEnabled){
 				data = data.trim();
+				dlen = data.length;
 			}
 			
 			Max.outlet('tcp-listen', 'data', addr.remoteAddress, addr.remotePort, dlen, data);
@@ -310,10 +314,11 @@ function startTcpClient(host, port)
 		
 		var dlen = data.length;
 		
-		data = data.toString(datamode);
+		data = data.toString(dataMode);
 		
 		if (dataMode == 'utf8' && trimEnabled){
 			data = data.trim();
+			dlen = data.length;
 		}
 		
 		Max.outlet('tcp', 'data', dlen, data);
