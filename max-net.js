@@ -11,59 +11,94 @@ var connectedClients = {};
 	
 var client = false;
 
+const DataModes = [
+	'utf8',
+	'hex',
+	'base64'
+];
+var dataMode = 'utf8';
+
+var trimEnabled = true;
+
 
 // This will be printed directly to the Max console
 Max.post(`Loaded the ${path.basename(__filename)} script`);
 	
+	
+Max.addHandler('datamode', (mode) => {
+
+	if (typeof mode !== 'undefined'){
+		
+		if (DataModes.indexOf(mode) == -1 ){
+			return console.error(`Invalid datamode ${mode}`);
+		}
+		
+		dataMode = mode;
+	}
+			
+	Max.outlet('datamode', dataMode);
+});
+
+Max.addHandler('trim', (enabled) => {
+
+	if (typeof enabled !== 'undefined'){
+	
+		trim = 0 < parseInt(enabled);	
+	}
+			
+	Max.outlet('trim', trimEnabled ? 1 : 0);
+});
+	
 
 function udpSend(client, host, port, data) {
+	
+	data = Buffer.from(data, dataMode);
+	
 	client.send(data, port, host, (err) => {
   		client.close();
 		if (err) {
-			Max.outlet(`udp-send error ${err.message}`);
+			Max.outlet('udp-send', 'error', err.message);
 		}
-		Max.outlet('udp-send ok');
+		Max.outlet('udp-send', 'ok');
 	});
 }
 
 Max.addHandler("udp-send", (host,port,...data) => {
 	
 	if (!host)
-		 return Max.outlet('udp-send error missing host');	
+		 return Max.outlet('udp-send', 'error', 'missing host');	
 	if (!port)
-		return Max.outlet('udp-send error missing port');
+		return Max.outlet('udp-send',  'error', 'missing port');
 		
 	if (data.length == 0){
-		return Max.outlet('udp-send error missing message');
+		return Max.outlet('udp-send', 'error', 'missing message');
 	}
 	
 	var data = data.join(' ');
 	
-	const dataBuf = Buffer.from(data);
 	const client = dgram.createSocket('udp4');
 	
-	udpSend( client, host, port, dataBuf );
+	udpSend( client, host, port, data );
 });
 
 Max.addHandler("udp-send-bc", (host,port,...data) => {
 	
 	if (!host)
-		 return Max.outlet('udp-send error missing host');	
+		 return Max.outlet('udp-send', 'error', 'missing host');	
 	if (!port)
-		return Max.outlet('udp-send error missing port');
+		return Max.outlet('udp-send', 'error', 'missing port');
 		
 	if (data.length == 0){
-		return Max.outlet('udp-send error missing message');
+		return Max.outlet('udp-send', 'error', 'missing message');
 	}
 	
 	var data = data.join(' ');
 	
-	const dataBuf = Buffer.from(data);
 	const client = dgram.createSocket('udp4');
 	
 	client.bind( () => {
 		client.setBroadcast(true);
-		udpSend(  client, host, port, dataBuf );
+		udpSend(  client, host, port, data );
 	});	
 });
 
@@ -72,7 +107,7 @@ function startUdpServer(port,address) {
 	server = dgram.createSocket('udp4');
 
 	server.on('error', (err) => {
-  		Max.outlet(`udp-recv error ${err.message}`);
+  		Max.outlet('udp-recv', 'error',  err.message);
 		console.error(err);
   		server.close();
 	});
@@ -80,17 +115,24 @@ function startUdpServer(port,address) {
 	server.on('listening', () => {
   		const address = server.address();
   		console.log(`server listening ${address.address}:${address.port}`);
-		Max.outlet('udp-recv start');
+		Max.outlet('udp-recv', 'start');
 	});
 
 	server.on('close', () => {
   		console.log(`server closed`);
 		server = false;
-		Max.outlet('udp-recv stop');
+		Max.outlet('udp-recv', 'stop');
 	});
 	
-	server.on('message', (msg, rinfo) => {
-		Max.outlet(`udp-recv data ${rinfo.address} ${rinfo.port} ${msg}`);
+	server.on('message', (data, rinfo) => {
+		
+		data = data.toString(datamode);
+		
+		if (dataMode == 'utf8' && trimEnabled){
+			data = data.trim();
+		}
+		
+		Max.outlet('udp-recv', 'data', rinfo.address, rinfo.port, data.length, data);
 	});
 		
 	server.bind(port,address);
@@ -111,11 +153,11 @@ Max.addHandler("udp-recv", (cmd, port, address) => {
 	else if (cmd == 'stop') {
 		if (server){
 			server.close(()=>{
-				Max.outlet('udp-recv stop');
+				Max.outlet('udp-recv', 'stop');
 			});
 		} else {
 			console.log('Server not running');
-			Max.outlet('udp-recv stop Was not running anyways..');
+			Max.outlet('udp-recv', 'stop');
 		}
 	}
 	
@@ -126,7 +168,7 @@ function startTcpServer(port,host)
 	server = net.createServer();
 	
 	server.on('error', (err) => {
-  		Max.outlet(`tcp-listen error ${err.message}`);
+  		Max.outlet('tcp-listen', 'error', err.message);
 		console.error(err);
   		server.close();
 	});
@@ -135,54 +177,54 @@ function startTcpServer(port,host)
 	server.on('listening', () => {
   		const address = server.address();
   		console.log(`server listening ${address.address}:${address.port}`);
-		Max.outlet('tcp-listen start');
+		Max.outlet('tcp-listen', 'start');
 	});
 
 	server.on('close', () => {
 		server = false;
 		connectedClients = {};
-		Max.outlet('tcp-listen stop');
+		Max.outlet('tcp-listen', 'stop');
 	});
 
 	server.on('connection', (socket) => {
   		//const serverAddress = server.address();
-		const remoteAddr = {
-			address: socket.remoteAddress,
-			port: socket.remotePort,
-			family: socket.remoteFamily
-		};
+		const addr = socket.address();
 		
-		console.log(remoteAddr);
 
-		connectedClients[`${remoteAddr.address}:${remoteAddr.port}`] = socket;
+		connectedClients[`${addr.remoteAddress}:${addr.remotePort}`] = socket;
 
-		Max.outlet(`tcp-listen connect ${remoteAddr.address} ${remoteAddr.port}`);
+		Max.outlet('tcp-listen', 'connect', addr.remoteAddress, addr.remotePort);
 		
 		socket.on('error', (err) => {
 			console.error(err);
 			socket.end();
-  			Max.outlet(`tcp-listen error ${err.message}`);
+  			Max.outlet('tcp-listen', 'error', err.message);
 		});
 		
 		socket.on('end', () => {
-			delete connectedClients[`${remoteAddr.address}:${remoteAddr.port}`];
-			Max.outlet(`tcp-listen disconnect ${remoteAddr.address} ${remoteAddr.port}`);
+			delete connectedClients[addr.remoteAddress];
+			Max.outlet('tcp-listen', 'disconnect', addr.remoteAddress, addr.remotePort);
 		});
 				
 		socket.on('data', (data) => {
-			Max.outlet(`tcp-listen data ${remoteAddr.address} ${remoteAddr.port} ${data}`);
+			
+			var dlen = data.length;
+			
+			data = data.toString(datamode);
+		
+			if (dataMode == 'utf8' && trimEnabled){
+				data = data.trim();
+			}
+			
+			Max.outlet('tcp-listen', 'data', addr.remoteAddress, addr.remotePort, dlen, data);
 		});
 		
 		socket.on('drain', () => {
-			Max.outlet(`tcp-listen sent ${remoteAddr.address} ${remoteAddr.port}`);
+			Max.outlet('tcp-listen', 'sent', addr.remoteAddress, addr.remotePort);
 		});
 		
 	});
 			
-//	server.on('message', (msg, rinfo) => {
-//		Max.outlet(`tcp-listen MSG ${rinfo.address} ${rinfo.port} ${msg}`);
-//	});
-
 	server.listen( port, host );
 }
 
@@ -202,11 +244,11 @@ Max.addHandler('tcp-listen', (cmd, ...opt) => {
 	else if (cmd == 'stop') {
 		if (server){
 			server.close(()=>{
-				Max.outlet('tcp-listen stop');
+				Max.outlet('tcp-listen', 'stop');
 			});
 		} else {
 			console.log('Server not running');
-			Max.outlet('tcp-listen stop Was not running anyways..');
+			Max.outlet('tcp-listen', 'stop');
 		}
 	}
 	else if (server && server instanceof net.Server){
@@ -214,7 +256,7 @@ Max.addHandler('tcp-listen', (cmd, ...opt) => {
 			const target = opt[0];
 			
 			if (!connectedClients[target]){
-				return Max.outlet(`tcp-listen error ${target} not connected, can not disconnect `);
+				return Max.outlet('tcp-listen', 'error', target, 'not connected, can not disconnect');
 			}
 			
 			connectedClients[target].end();
@@ -230,26 +272,12 @@ Max.addHandler('tcp-listen', (cmd, ...opt) => {
 			} else {
 		
 				if (!connectedClients[recipient]){
-					return Max.outlet(`tcp-listen error ${recipient} not connected, can not send `);
+					return Max.outlet('tcp-listen', 'error', recipient, 'not connected, can not send');
 				}
 				
-				connectedClients[recipient].write(data);
-				
+				connectedClients[recipient].write(data);	
 			}
-		
-			
-//, 'utf-8', () => {
-//			Max.outlet(`tcp-listen send ${recipient} ok`);
-//		});
 		}
-		//else if (cmd == 'sendtoall') {
-		//
-		//	const data = opt.slice(1).join(' ');
-		//
-		//	for(var i in connectedClients){
-		//		connectedClients[i].write(data);
-		//	}
-		//}
 	}
 	
 });
@@ -265,25 +293,34 @@ function startTcpClient(host, port)
 		client.end(() => {
   			client.close();
 		});
-  		Max.outlet(`tcp error ${err.message}`);
+  		Max.outlet('tcp', 'error', err.message);
 	});
 
 	client.on('end', () => {
 		client.destroy();
 		client = false;
-		Max.outlet(`tcp disconnect ${host} ${port}`);
+		Max.outlet('tcp', 'disconnect', host, port);
 	});
 	
 	client.on('connect', () => {
-		Max.outlet(`tcp connect ${host} ${port}`);	
+		Max.outlet('tcp',  'connect', host, port);	
 	});
 					
 	client.on('data', (data) => {
-		Max.outlet(`tcp data ${data}`);
+		
+		var dlen = data.length;
+		
+		data = data.toString(datamode);
+		
+		if (dataMode == 'utf8' && trimEnabled){
+			data = data.trim();
+		}
+		
+		Max.outlet('tcp', 'data', dlen, data);
 	});
 		
 	client.on('drain', () => {
-		Max.outlet(`tcp sent`);
+		Max.outlet('tcp', 'sent');
 	});
 	
 	
@@ -308,7 +345,7 @@ Max.addHandler('tcp', (cmd, ...opt) => {
 			client.end();
 		} else {
 			console.log('client not connected');
-			Max.outlet('tcp disconnect Was not connected anyways..');
+			Max.outlet('tcp', 'disconnect');
 		}
 	}
 	else if (client && client instanceof net.Socket){
