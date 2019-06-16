@@ -191,12 +191,16 @@ function startTcpServer(port,host)
 
 	server.on('connection', (socket) => {
   		//const serverAddress = server.address();
-		const addr = socket.address();
+		const remote = {
+			addr: socket.remoteAddress,
+			port: socket.remotePort,
+			family: socket.remoteFamily
+		};
 		
 
-		connectedClients[`${addr.remoteAddress}:${addr.remotePort}`] = socket;
+		connectedClients[`${remote.addr}:${remote.port}`] = socket;
 
-		Max.outlet('tcp-listen', 'connect', addr.remoteAddress, addr.remotePort);
+		Max.outlet('tcp-listen', 'connect', remote.addr, remote.port);
 		
 		socket.on('error', (err) => {
 			console.error(err);
@@ -205,8 +209,8 @@ function startTcpServer(port,host)
 		});
 		
 		socket.on('end', () => {
-			delete connectedClients[addr.remoteAddress];
-			Max.outlet('tcp-listen', 'disconnect', addr.remoteAddress, addr.remotePort);
+			delete connectedClients[`${remote.addr}:${remote.port}`];
+			Max.outlet('tcp-listen', 'disconnect', remote.addr, remote.port);
 		});
 				
 		socket.on('data', (data) => {
@@ -220,11 +224,11 @@ function startTcpServer(port,host)
 				dlen = data.length;
 			}
 			
-			Max.outlet('tcp-listen', 'data', addr.remoteAddress, addr.remotePort, dlen, data);
+			Max.outlet('tcp-listen', 'data', remote.addr, remote.port, dlen, data);
 		});
 		
 		socket.on('drain', () => {
-			Max.outlet('tcp-listen', 'sent', addr.remoteAddress, addr.remotePort);
+			Max.outlet('tcp-listen', 'sent', remote.addr, remote.port);
 		});
 		
 	});
