@@ -4,6 +4,7 @@ const dgram = require('dgram');
 const net = require('net');
 
 const { networkInterfaces } = require('os');
+const dns = require('dns');
 
 
 const Max = require('max-api');
@@ -42,6 +43,25 @@ Max.addHandler('ip', (ifname, family, internal) => {
       }
     }
 	}
+});
+
+Max.addHandler('nslookup', (hostname, family) => {
+	dns.lookup(hostname, {family: family}, (err, address, family_) => {
+		switch (family_){
+			case 4: family_ = 'IPv4'; break;
+			case 6: family_ = 'IPv6'; break;
+			default: break;
+		}
+		Max.outlet('nslookup', hostname, !!err, address, family_ );
+	});
+});
+
+Max.addHandler('resolve', (hostname, rrtype) => {
+	// works exactly once..
+	console.log('resolve', hostname, rrtype);
+	dns.resolve(hostname, rrtype, (err, records) => {
+		console.log(records);
+	});
 });
 
 Max.addHandler('datamode', (mode) => {

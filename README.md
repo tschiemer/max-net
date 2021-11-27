@@ -9,3 +9,4 @@ Transmission of binary data supported aswell using hex or base64 encoding.
 
 
 - IP lookup of local interfaces (see subpatch *all possibilities*)
+- simple nslookup
