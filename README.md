@@ -6,3 +6,6 @@ As the original `udpsend` and `udpreceive` objects do NOT send actual raw data b
 Additional to UDP-listening/-sending a TCP-Client/Server interface is implemented.
 
 Transmission of binary data supported aswell using hex or base64 encoding.
+
+
+- IP lookup of local interfaces (see subpatch *all possibilities*)
